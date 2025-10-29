@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Galería - Stone Art Ecuador</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="header-logo">
+            <img src="{{ url_for('static', filename='logo/logo.png') }}" alt="Stone Art Ecuador">
+            <h1>Stone Art Ecuador</h1>
+        </div>
+        <nav>
+            <a href="/">Inicio</a>
+            <a href="/galeria" class="activo">Galería</a>
+            <a href="/nosotros">Nosotros</a>
+            <a href="/contacto">Contacto</a>
+        </nav>
+    </header>
+
+    <section>
+        <h2>Nuestras Obras</h2>
+        <p>Explora algunas de las creaciones en piedra, madera y pintura artesanal.</p>
+
+        <div class="galeria">
+            {% for obra in obras %}
+            <div class="obra">
+                <img src="{{ url_for('static', filename='images/obras/' ~ obra.imagen) }}" 
+                     alt="{{ obra.descripcion }}" onclick="openLightbox(this.src)">
+                <p>{{ obra.descripcion }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 Stone Art Ecuador</p>
+    </footer>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <img id="lightbox-img" src="">
+    </div>
+
+    <script>
+    function openLightbox(src) {
+        document.getElementById('lightbox').style.display = 'flex';
+        document.getElementById('lightbox-img').src = src;
+    }
+    function closeLightbox() {
+        document.getElementById('lightbox').style.display = 'none';
+    }
+    </script>
+</body>
+</html>
+
+

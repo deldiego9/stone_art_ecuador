@@ -1,0 +1,294 @@
+/* -------------------- Body general -------------------- */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f4f1ec;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    text-align: center;
+}
+
+/* -------------------- Header y navegación -------------------- */
+header {
+    background-color: #5e4633;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: column; /* columna para centrar logo y menú */
+    align-items: center;    /* centra horizontalmente */
+}
+
+header .header-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+header .header-logo img {
+    height: 50px;
+}
+
+/* -------------------- Menú centrado -------------------- */
+header nav {
+    display: flex;
+    justify-content: center; /* centra horizontalmente los enlaces */
+    gap: 20px;               /* espacio entre enlaces */
+    margin-top: 10px;
+}
+
+header nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+header nav a:hover,
+header nav a.activo {
+    text-decoration: underline;
+}
+
+/* -------------------- Banner -------------------- */
+.banner {
+    width: 100%;
+    overflow: hidden;
+}
+
+.banner img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+}
+
+/* -------------------- Secciones -------------------- */
+section {
+    padding: 40px 20px;
+    text-align: center;
+}
+
+/* -------------------- Footer -------------------- */
+footer {
+    background-color: #e0d6c6;
+    text-align: center;
+    padding: 15px;
+    margin-top: 40px;
+}
+
+/* -------------------- Galería profesional -------------------- */
+.galeria {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+    justify-content: center;
+}
+
+.obra {
+    background: #fff;
+    border-radius: 12px;
+    padding: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.obra img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.3s;
+}
+
+.obra:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.obra:hover img {
+    transform: scale(1.05);
+}
+
+.obra p {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+/* -------------------- Lightbox -------------------- */
+.lightbox {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.lightbox img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+/* -------------------- Formulario de contacto -------------------- */
+.form-contacto {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 350px;
+    margin: 20px auto;
+}
+
+.form-contacto input,
+.form-contacto textarea {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #bbb;
+    border-radius: 8px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.form-contacto button {
+    background-color: #5e4633;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.form-contacto button:hover {
+    background-color: #7a5c45;
+}
+/* -------------------- Contacto -------------------- */
+.contacto {
+    padding: 40px 20px;
+    text-align: center;
+    background-color: #f4f1ec;
+}
+
+.contacto-contenedor {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 40px;
+    margin-top: 30px;
+}
+
+.form-contacto {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-contacto input,
+.form-contacto textarea {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.form-contacto button {
+    background-color: #5e4633;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.form-contacto button:hover {
+    background-color: #7a5c45;
+}
+
+.mensaje-enviado {
+    color: green;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.info-contacto {
+    text-align: left;
+    max-width: 350px;
+}
+
+.info-contacto h3 {
+    margin-bottom: 15px;
+    color: #5e4633;
+}
+
+.info-contacto p {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.mapa {
+    margin-top: 40px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+/* -------------------- Alerta de envío exitoso -------------------- */
+/* -------------------- Alerta de envío exitoso -------------------- */
+.alerta-exito {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    padding: 15px;
+    border-radius: 10px;
+    width: 60%;
+    margin: 20px auto;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    opacity: 1; /* inicial */
+    transition: opacity 0.8s ease; /* transición suave para desvanecer */
+}
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* -------------------- Responsive -------------------- */
+@media (max-width: 992px) {
+    .galeria {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .galeria {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 10px;
+    }
+
+    .obra img {
+        height: 120px;
+    }
+
+    .obra p {
+        font-size: 12px;
+    }
+}
+
+
