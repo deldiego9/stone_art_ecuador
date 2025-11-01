@@ -19,6 +19,14 @@ def enviar_correo_async(datos):
     response = requests.post(BREVO_URL, headers=headers, json=datos)
     print("Respuesta de Brevo:", response.status_code, response.text)
 
+    # ---------------- Ruta temporal para verificar la API Key ----------------
+@app.route("/verificar-key")
+def verificar_key():
+    if BREVO_API_KEY:
+        return f"Clave Brevo encontrada: {BREVO_API_KEY[:6]}... (longitud {len(BREVO_API_KEY)})"
+    else:
+        return "No se encontró la clave BREVO_API_KEY"
+
 # ---------------- Rutas de la web ----------------
 @app.route('/')
 def index():
