@@ -2,23 +2,18 @@ from flask import Flask, render_template, request, flash, redirect
 from flask_mail import Mail, Message
 import os
 
-app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "clave_temporal")
+app = Flask(__name__)  # <-- esta línea debe ir primero
+app.secret_key = os.environ.get("SECRET_KEY", "clave_temporal")  # para mensajes flash
 
-# ---------------- Configuración Flask-Mail ----------------
-app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
-app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
+# Configuración de Flask-Mail
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
-app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
-app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', app.config['MAIL_USERNAME'])
+app.config['MAIL_USERNAME'] = 'deldiego9.es@gmail.com'
+app.config['MAIL_PASSWORD'] = 'qeqhqlofdejntmvb'
+app.config['MAIL_DEFAULT_SENDER'] = 'deldiego9@gmail.com'
 
 mail = Mail(app)
-
-# ---------------- Ruta de prueba ----------------
-@app.route("/ping")
-def ping():
-    return "App funcionando correctamente!"
 
 # ---------------- Rutas de la web ----------------
 @app.route('/')
@@ -56,27 +51,36 @@ def galeria():
 @app.route('/contacto', methods=['GET', 'POST'])
 def contacto():
     if request.method == 'POST':
-        nombre = request.form['nombre']
-        email = request.form['email']
-        mensaje = request.form['mensaje']
-
-        destinatarios = ['deldiego9@gmail.com', 'deldiego9.es@gmail.com']
+        nombre = request.form.get('nombre')
+        email = request.form.get('email')
+        mensaje = request.form.get('mensaje')
 
         try:
-            msg = Message(f"Nuevo mensaje de {nombre}", recipients=destinatarios)
-            msg.body = f"De: {nombre}\nCorreo: {email}\n\nMensaje:\n{mensaje}"
+            msg = Message(
+                subject=f"Nuevo mensaje de {nombre}",
+                recipients=['deldiego9.es@gmail.com', 'deldiego9@gmail.com']
+            )
+            msg.body = f"""
+Has recibido un nuevo mensaje desde tu sitio web Stone Art Ecuador:
+
+Nombre: {nombre}
+Correo: {email}
+
+Mensaje:
+{mensaje}
+"""
             mail.send(msg)
-            flash("✅ Tu mensaje se ha enviado correctamente. Nos pondremos en contacto contigo.", "exito")
+            flash("✅ Mensaje enviado correctamente. ¡Gracias por contactarnos!", "success")
         except Exception as e:
-            print(f"Error enviando correo: {e}")  # Para ver en logs de Render
-            flash("⚠️ No se pudo enviar el correo, pero tu mensaje se registró.", "error")
+            flash(f"❌ Error al enviar el mensaje: {e}", "danger")
 
         return redirect('/contacto')
 
     return render_template('contacto.html')
 
-# ---------------- Nota importante ----------------
-# En Render NO uses app.run()
-# Start Command: gunicorn app:app
+# ---------------- Ejecutar la app ----------------
+if __name__ == '__main__':
+    app.run(debug=True)
+
 
 
