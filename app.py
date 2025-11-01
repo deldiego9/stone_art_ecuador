@@ -10,9 +10,9 @@ app.secret_key = os.environ.get("SECRET_KEY", "clave_temporal")  # Para mensajes
 app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
 app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = os.environ.get('deldiego9.es@gmail.com')
-app.config['MAIL_PASSWORD'] = os.environ.get('qeqhqlofdejntmvb')
-app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', app.config['deldiego9@gmail.com'])
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME', 'deldiego9.es@gmail.com')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', 'qeqhqlofdejntmvb')
+app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'deldiego9.es@gmail.com')
 
 mail = Mail(app)
 
@@ -67,7 +67,6 @@ def contacto():
             msg = Message(f"Nuevo mensaje de {nombre}", recipients=destinatarios)
             msg.body = f"De: {nombre}\nCorreo: {email}\n\nMensaje:\n{mensaje}"
             
-            # Envío asíncrono para no bloquear el worker
             Thread(target=enviar_correo_async, args=(app, msg)).start()
 
             flash("✅ Tu mensaje se ha enviado correctamente. Nos pondremos en contacto contigo.", "exito")
@@ -78,27 +77,9 @@ def contacto():
 
     return render_template('contacto.html')
 
-# ---------------- Ruta de prueba de correo ----------------
-@app.route('/prueba-correo')
-def prueba_correo():
-    try:
-        destinatarios = ['deldiego9@gmail.com', 'deldiego9.es@gmail.com']
-        msg = Message("Prueba de Render", recipients=destinatarios)
-        msg.body = "Si recibes este correo, Flask-Mail funciona en Render."
-        Thread(target=enviar_correo_async, args=(app, msg)).start()
-        return "Correo enviado correctamente (asíncrono)"
-    except Exception as e:
-        return f"Error al enviar correo: {e}"
-
-# ---------------- Ping para verificar app ----------------
+# ---------------- Ping de verificación ----------------
 @app.route("/ping")
 def ping():
     return "App funcionando correctamente!"
-
-# ---------------- Nota importante ----------------
-# NO incluyas app.run() en producción en Render.
-# Start Command en Render: gunicorn app:app
-
-
 
 
