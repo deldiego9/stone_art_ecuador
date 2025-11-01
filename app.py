@@ -3,7 +3,7 @@ from flask_mail import Mail, Message
 import os
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "clave_temporal")  # Mensajes flash
+app.secret_key = os.environ.get("SECRET_KEY", "clave_temporal")
 
 # ---------------- Configuración Flask-Mail ----------------
 app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
@@ -14,6 +14,11 @@ app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
 app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', app.config['MAIL_USERNAME'])
 
 mail = Mail(app)
+
+# ---------------- Ruta de prueba ----------------
+@app.route("/ping")
+def ping():
+    return "App funcionando correctamente!"
 
 # ---------------- Rutas de la web ----------------
 @app.route('/')
@@ -55,33 +60,23 @@ def contacto():
         email = request.form['email']
         mensaje = request.form['mensaje']
 
+        destinatarios = ['deldiego9@gmail.com', 'deldiego9.es@gmail.com']
+
         try:
-            # Enviar a dos correos diferentes
-            destinatarios = ['deldiego9@gmail.com', 'deldiego9.es@gmail.com']
             msg = Message(f"Nuevo mensaje de {nombre}", recipients=destinatarios)
             msg.body = f"De: {nombre}\nCorreo: {email}\n\nMensaje:\n{mensaje}"
             mail.send(msg)
             flash("✅ Tu mensaje se ha enviado correctamente. Nos pondremos en contacto contigo.", "exito")
         except Exception as e:
-            flash(f"❌ Error al enviar el mensaje: {e}", "error")
+            print(f"Error enviando correo: {e}")  # Para ver en logs de Render
+            flash("⚠️ No se pudo enviar el correo, pero tu mensaje se registró.", "error")
 
         return redirect('/contacto')
 
     return render_template('contacto.html')
 
-# ---------------- Endpoint de prueba ----------------
-@app.route('/prueba-correo')
-def prueba_correo():
-    try:
-        msg = Message("Prueba de Render",
-                      recipients=["deldiego9@gmail.com", "deldiego9.es@gmail.com"])
-        msg.body = "Si recibes este correo, Flask-Mail funciona en Render."
-        mail.send(msg)
-        return "Correo enviado correctamente"
-    except Exception as e:
-        return f"Error al enviar correo: {e}"
-
 # ---------------- Nota importante ----------------
-# NO incluyas app.run() en producción, Gunicorn se encarga de iniciar la app
-# Start Command en Render: gunicorn app:app
+# En Render NO uses app.run()
+# Start Command: gunicorn app:app
+
 
