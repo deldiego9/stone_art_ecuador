@@ -83,5 +83,14 @@ def contacto():
 @app.route("/ping")
 def ping():
     return "App funcionando correctamente!"
-
-
+# ---------------- Ruta de prueba de correo ----------------
+@app.route('/prueba-correo')
+def prueba_correo():
+    try:
+        destinatarios = ['deldiego9@gmail.com', 'deldiego9.es@gmail.com']
+        msg = Message("Prueba de Render", recipients=destinatarios)
+        msg.body = "Si recibes este correo, Flask-Mail funciona en Render."
+        Thread(target=enviar_correo_async, args=(app, msg)).start()
+        return "Correo enviado correctamente (asíncrono)"
+    except Exception as e:
+        return f"Error al enviar correo: {e}"
