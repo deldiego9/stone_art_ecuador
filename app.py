@@ -10,9 +10,9 @@ app.secret_key = os.environ.get("SECRET_KEY", "clave_temporal")  # Para mensajes
 app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
 app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
-app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
-app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', app.config['MAIL_USERNAME'])
+app.config['MAIL_USERNAME'] = os.environ.get('deldiego9.es@gmail.com')
+app.config['MAIL_PASSWORD'] = os.environ.get('qeqhqlofdejntmvb')
+app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', app.config['deldiego9@gmail.com'])
 
 mail = Mail(app)
 
