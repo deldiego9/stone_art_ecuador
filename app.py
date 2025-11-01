@@ -1,19 +1,25 @@
 from flask import Flask, render_template, request, flash, redirect
 from flask_mail import Mail, Message
+from threading import Thread
 import os
 
-app = Flask(__name__)  # <-- esta línea debe ir primero
-app.secret_key = os.environ.get("SECRET_KEY", "clave_temporal")  # para mensajes flash
+app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY", "clave_temporal")  # Para mensajes flash
 
-# Configuración de Flask-Mail
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
+# ---------------- Configuración Flask-Mail ----------------
+app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
+app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'deldiego9.es@gmail.com'
-app.config['MAIL_PASSWORD'] = 'qeqhqlofdejntmvb'
-app.config['MAIL_DEFAULT_SENDER'] = 'deldiego9@gmail.com'
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', app.config['MAIL_USERNAME'])
 
 mail = Mail(app)
+
+# ---------------- Función para enviar correo asíncrono ----------------
+def enviar_correo_async(app, msg):
+    with app.app_context():
+        mail.send(msg)
 
 # ---------------- Rutas de la web ----------------
 @app.route('/')
@@ -51,36 +57,48 @@ def galeria():
 @app.route('/contacto', methods=['GET', 'POST'])
 def contacto():
     if request.method == 'POST':
-        nombre = request.form.get('nombre')
-        email = request.form.get('email')
-        mensaje = request.form.get('mensaje')
+        nombre = request.form['nombre']
+        email = request.form['email']
+        mensaje = request.form['mensaje']
 
         try:
-            msg = Message(
-                subject=f"Nuevo mensaje de {nombre}",
-                recipients=['deldiego9.es@gmail.com', 'deldiego9@gmail.com']
-            )
-            msg.body = f"""
-Has recibido un nuevo mensaje desde tu sitio web Stone Art Ecuador:
+            # Enviar a múltiples destinatarios
+            destinatarios = ['deldiego9@gmail.com', 'deldiego9.es@gmail.com']
+            msg = Message(f"Nuevo mensaje de {nombre}", recipients=destinatarios)
+            msg.body = f"De: {nombre}\nCorreo: {email}\n\nMensaje:\n{mensaje}"
+            
+            # Envío asíncrono para no bloquear el worker
+            Thread(target=enviar_correo_async, args=(app, msg)).start()
 
-Nombre: {nombre}
-Correo: {email}
-
-Mensaje:
-{mensaje}
-"""
-            mail.send(msg)
-            flash("✅ Mensaje enviado correctamente. ¡Gracias por contactarnos!", "success")
+            flash("✅ Tu mensaje se ha enviado correctamente. Nos pondremos en contacto contigo.", "exito")
         except Exception as e:
-            flash(f"❌ Error al enviar el mensaje: {e}", "danger")
+            flash(f"❌ Error al enviar el mensaje: {e}", "error")
 
         return redirect('/contacto')
 
     return render_template('contacto.html')
 
-# ---------------- Ejecutar la app ----------------
-if __name__ == '__main__':
-    app.run(debug=True)
+# ---------------- Ruta de prueba de correo ----------------
+@app.route('/prueba-correo')
+def prueba_correo():
+    try:
+        destinatarios = ['deldiego9@gmail.com', 'deldiego9.es@gmail.com']
+        msg = Message("Prueba de Render", recipients=destinatarios)
+        msg.body = "Si recibes este correo, Flask-Mail funciona en Render."
+        Thread(target=enviar_correo_async, args=(app, msg)).start()
+        return "Correo enviado correctamente (asíncrono)"
+    except Exception as e:
+        return f"Error al enviar correo: {e}"
+
+# ---------------- Ping para verificar app ----------------
+@app.route("/ping")
+def ping():
+    return "App funcionando correctamente!"
+
+# ---------------- Nota importante ----------------
+# NO incluyas app.run() en producción en Render.
+# Start Command en Render: gunicorn app:app
+
 
 
 
