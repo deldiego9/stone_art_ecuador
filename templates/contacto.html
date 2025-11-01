@@ -23,12 +23,18 @@
         <h2>Contáctanos</h2>
         <p>¿Tienes alguna pregunta o deseas solicitar un trabajo personalizado? Envíanos un mensaje o visítanos directamente.</p>
 
-        {% if enviado %}
-        <div class="alerta-exito">
-            ✅ ¡Tu mensaje se ha enviado correctamente!  
-            Nos pondremos en contacto contigo lo antes posible.
-        </div>
-        {% endif %}
+        <!-- Mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div id="flash-messages">
+              {% for category, message in messages %}
+                <div class="alert {{ category }}">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
 
         <div class="contacto-contenedor">
             <!-- Formulario -->
@@ -60,31 +66,21 @@
     <footer>
         <p>© 2025 Stone Art Ecuador</p>
     </footer>
+
+    <!-- JavaScript para que el mensaje flash desaparezca después de 4 segundos -->
     <script>
-    // Oculta automáticamente el mensaje de éxito después de 4 segundos
     document.addEventListener("DOMContentLoaded", function() {
-        const alerta = document.querySelector(".alerta-exito");
-        if (alerta) {
+        const flash = document.getElementById('flash-messages');
+        if (flash) {
             setTimeout(() => {
-                alerta.style.transition = "opacity 0.8s ease";
-                alerta.style.opacity = "0";
-                setTimeout(() => alerta.remove(), 800);
-            }, 4000);
+                flash.style.transition = "opacity 0.8s ease";
+                flash.style.opacity = "0";
+                setTimeout(() => flash.remove(), 800);
+            }, 4000); // 4 segundos
         }
     });
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const alerta = document.querySelector(".alerta-exito");
-    if (alerta) {
-        setTimeout(() => {
-            alerta.style.opacity = "0"; // se desvanece
-            setTimeout(() => alerta.remove(), 800); // se elimina después de la transición
-        }, 4000); // visible 4 segundos
-    }
-});
-</script>
-
+    </script>
 </body>
 </html>
+
 
