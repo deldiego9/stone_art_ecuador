@@ -1,27 +1,23 @@
 from flask import Flask, render_template, request, flash, redirect
-from flask_mail import Mail, Message
-from threading import Thread
+import requests
 import os
+import threading
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "clave_temporal")  # Para mensajes flash
+app.secret_key = os.environ.get("SECRET_KEY", "clave_temporal")
 
-# ---------------- Configuración Flask-Mail ----------------
-# ---------------- Configuración Flask-Mail ----------------
-app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
-app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USE_SSL'] = False
-app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
-app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
-app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER')
+# ---------------- Configuración de Brevo (Sendinblue) ----------------
+BREVO_API_KEY = os.environ.get("BREVO_API_KEY")
+BREVO_URL = "https://api.brevo.com/v3/smtp/email"
 
-mail = Mail(app)
-
-# ---------------- Función para enviar correo asíncrono ----------------
-def enviar_correo_async(app, msg):
-    with app.app_context():
-        mail.send(msg)
+def enviar_correo_async(datos):
+    headers = {
+        "accept": "application/json",
+        "api-key": BREVO_API_KEY,
+        "content-type": "application/json",
+    }
+    response = requests.post(BREVO_URL, headers=headers, json=datos)
+    print("Respuesta de Brevo:", response.status_code, response.text)
 
 # ---------------- Rutas de la web ----------------
 @app.route('/')
@@ -64,13 +60,17 @@ def contacto():
         mensaje = request.form['mensaje']
 
         try:
-            # Enviar a múltiples destinatarios
-            destinatarios = ['deldiego9@gmail.com', 'deldiego9.es@gmail.com']
-            msg = Message(f"Nuevo mensaje de {nombre}", recipients=destinatarios)
-            msg.body = f"De: {nombre}\nCorreo: {email}\n\nMensaje:\n{mensaje}"
-            
-            Thread(target=enviar_correo_async, args=(app, msg)).start()
+            datos = {
+                "sender": {"name": nombre, "email": "no-reply@stoneartecuador.com"},
+                "to": [
+                    {"email": "deldiego9@gmail.com", "name": "Stone Art Ecuador"},
+                    {"email": "deldiego9.es@gmail.com", "name": "Stone Art Ecuador"},
+                ],
+                "subject": f"Nuevo mensaje de {nombre}",
+                "htmlContent": f"<p><b>Nombre:</b> {nombre}</p><p><b>Email:</b> {email}</p><p><b>Mensaje:</b><br>{mensaje}</p>",
+            }
 
+            threading.Thread(target=enviar_correo_async, args=(datos,)).start()
             flash("✅ Tu mensaje se ha enviado correctamente. Nos pondremos en contacto contigo.", "exito")
         except Exception as e:
             flash(f"❌ Error al enviar el mensaje: {e}", "error")
@@ -83,14 +83,20 @@ def contacto():
 @app.route("/ping")
 def ping():
     return "App funcionando correctamente!"
+
 # ---------------- Ruta de prueba de correo ----------------
 @app.route('/prueba-correo')
 def prueba_correo():
-    try:
-        destinatarios = ['deldiego9@gmail.com', 'deldiego9.es@gmail.com']
-        msg = Message("Prueba de Render", recipients=destinatarios)
-        msg.body = "Si recibes este correo, Flask-Mail funciona en Render."
-        Thread(target=enviar_correo_async, args=(app, msg)).start()
-        return "Correo enviado correctamente (asíncrono)"
-    except Exception as e:
-        return f"Error al enviar correo: {e}"
+    datos = {
+        "sender": {"name": "Stone Art Ecuador", "email": "no-reply@stoneartecuador.com"},
+        "to": [
+            {"email": "deldiego9@gmail.com", "name": "Diego"},
+            {"email": "deldiego9.es@gmail.com", "name": "Diego"},
+        ],
+        "subject": "Correo de prueba desde Brevo",
+        "htmlContent": "<p>¡El sistema de correo funciona correctamente con Brevo 🎉!</p>",
+    }
+
+    threading.Thread(target=enviar_correo_async, args=(datos,)).start()
+    return "Correo de prueba enviado correctamente con Brevo"
+
