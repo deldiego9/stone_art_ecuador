@@ -69,6 +69,19 @@ def contacto():
 
     return render_template('contacto.html')
 
+# ---------------- Endpoint de prueba ----------------
+@app.route('/prueba-correo')
+def prueba_correo():
+    try:
+        msg = Message("Prueba de Render",
+                      recipients=["deldiego9@gmail.com", "deldiego9.es@gmail.com"])
+        msg.body = "Si recibes este correo, Flask-Mail funciona en Render."
+        mail.send(msg)
+        return "Correo enviado correctamente"
+    except Exception as e:
+        return f"Error al enviar correo: {e}"
+
 # ---------------- Nota importante ----------------
 # NO incluyas app.run() en producción, Gunicorn se encarga de iniciar la app
-# Para Render: Start Command -> gunicorn app:app
+# Start Command en Render: gunicorn app:app
+
