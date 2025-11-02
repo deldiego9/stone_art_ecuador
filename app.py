@@ -16,16 +16,12 @@ def enviar_correo_async(datos):
         "api-key": BREVO_API_KEY,
         "content-type": "application/json",
     }
-    response = requests.post(BREVO_URL, headers=headers, json=datos)
-    print("Respuesta de Brevo:", response.status_code, response.text)
-
-    # ---------------- Ruta temporal para verificar la API Key ----------------
-@app.route("/verificar-key")
-def verificar_key():
-    if BREVO_API_KEY:
-        return f"Clave Brevo encontrada: {BREVO_API_KEY[:6]}... (longitud {len(BREVO_API_KEY)})"
-    else:
-        return "No se encontró la clave BREVO_API_KEY"
+    try:
+        response = requests.post(BREVO_URL, headers=headers, json=datos)
+        if response.status_code != 201:
+            print("⚠️ Error al enviar correo:", response.status_code, response.text)
+    except Exception as e:
+        print("❌ Error de conexión con Brevo:", e)
 
 # ---------------- Rutas de la web ----------------
 @app.route('/')
@@ -69,7 +65,6 @@ def contacto():
 
         try:
             datos = {
-                # Sender verificado en Brevo
                 "sender": {"name": "Stone Art Ecuador", "email": "deldiego9.es@gmail.com"},
                 "to": [
                     {"email": "deldiego9@gmail.com", "name": "Stone Art Ecuador"},
@@ -88,26 +83,6 @@ def contacto():
 
     return render_template('contacto.html')
 
-# ---------------- Ping de verificación ----------------
 @app.route("/ping")
 def ping():
     return "App funcionando correctamente!"
-
-# ---------------- Ruta de prueba de correo ----------------
-@app.route('/prueba-correo')
-def prueba_correo():
-    datos = {
-        "sender": {"name": "Stone Art Ecuador", "email": "deldiego9.es@gmail.com"},
-        "to": [
-            {"email": "deldiego9@gmail.com", "name": "Diego"},
-            {"email": "deldiego9.es@gmail.com", "name": "Diego"},
-        ],
-        "subject": "Correo de prueba desde Brevo",
-        "htmlContent": "<p>¡El sistema de correo funciona correctamente con Brevo 🎉!</p>",
-    }
-
-    threading.Thread(target=enviar_correo_async, args=(datos,)).start()
-    return "Correo de prueba enviado correctamente con Brevo"
-
-
-
