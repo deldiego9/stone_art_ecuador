@@ -2,21 +2,26 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stone Art Ecuador</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <!-- Header con menú centrado -->
     <header>
-        <nav>
-            <a href="/" class="activo">Inicio</a>
-            <a href="/galeria">Galería</a>
-            <a href="/nosotros">Nosotros</a>
-            <a href="/contacto">Contacto</a>
+        <nav class="nav">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='logo/logo.png') }}" alt="Stone Art Ecuador">
+            </div>
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+            <div class="menu">
+                <a href="/" class="activo">Inicio</a>
+                <a href="/galeria">Galería</a>
+                <a href="/nosotros">Nosotros</a>
+                <a href="/contacto">Contacto</a>
+            </div>
         </nav>
     </header>
 
-    <!-- 🔹 Banner principal -->
     <div class="banner">
         <img src="{{ url_for('static', filename='images/banner/banner.jpg') }}" alt="Stone Art Ecuador - Banner">
     </div>
@@ -29,8 +34,16 @@
     <footer>
         <p>© 2025 Stone Art Ecuador</p>
     </footer>
+
+    <script>
+    function toggleMenu() {
+        document.querySelector(".menu").classList.toggle("activo");
+    }
+    </script>
 </body>
 </html>
+
+
 
 
 
