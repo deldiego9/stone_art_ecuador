@@ -2,48 +2,35 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nosotros - Stone Art Ecuador</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <header>
-        <nav class="nav">
-            <div class="logo">
-                <img src="{{ url_for('static', filename='logo/logo.png') }}" alt="Stone Art Ecuador">
-            </div>
-            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
-            <div class="menu">
-                <a href="/">Inicio</a>
-                <a href="/galeria">Galería</a>
-                <a href="/nosotros" class="activo">Nosotros</a>
-                <a href="/contacto">Contacto</a>
-            </div>
+        <nav>
+            <a href="/">Inicio</a>
+            <a href="/galeria">Galería</a>
+            <a href="/nosotros" class="activo">Nosotros</a>
+            <a href="/contacto">Contacto</a>
         </nav>
     </header>
 
-    <section class="nosotros-contenido">
-        <div class="nosotros-texto">
-            <h2>Sobre Nosotros</h2>
-            <p>En <strong>Stone Art Ecuador</strong> transformamos la piedra, la madera y otros materiales nobles en verdaderas obras de arte. Fusionamos tradición, técnica y creatividad en cada pieza.</p>
-            <p>Somos expertos en la elaboración de esculturas, bustos, relieves, fuentes, columnas y otros trabajos artísticos en piedra, granito y mármol.</p>
-            <p>También ofrecemos servicios de pintura, murales, maquetas y diseño de cascadas, llevando el arte ecuatoriano a cada rincón.</p>
-        </div>
+    <section>
+        <h2>Sobre Nosotros</h2>
+        <p>En <strong>Stone Art Ecuador</strong> transformamos la piedra, la madera y otros materiales nobles en verdaderas obras de arte.  
+        Nuestra pasión por el arte y la dedicación al detalle se reflejan en cada creación que elaboramos, fusionando tradición, técnica y creatividad.</p>
 
-        <div class="nosotros-imagen">
-            <img src="{{ url_for('static', filename='images/nosotros/piedra_arte.jpg') }}" alt="Arte en piedra - Stone Art Ecuador">
-        </div>
+        <p>Somos expertos en la elaboración y diseño de todo tipo de expresiones artísticas en piedra con fines decorativos.  
+        Nuestra actividad abarca la realización de esculturas y trabajos como <strong>bustos, retratos, figuras, piletas, fuentes, rótulos, relieves, bancas, mesas, maceteros, columnas, esculturas para parques y jardines, mosaicos, lápidas, urnas</strong> y cualquier otra creación que pueda tomar forma en piedra.</p>
+
+        <p>Además, trabajamos con materiales como <strong>granito y mármol</strong> para la elaboración de mesones, pisos y elementos arquitectónicos personalizados.  
+        También ofrecemos servicios artísticos complementarios como <strong>taracea, murales, pinturas y dibujo artístico, maquetas</strong> y <strong>diseño de cascadas</strong>, entre otros.</p>
+
+        <p>En cada proyecto buscamos transmitir la esencia del arte ecuatoriano con una visión contemporánea, garantizando calidad, durabilidad y una estética única en cada pieza.</p>
     </section>
 
     <footer>
         <p>© 2025 Stone Art Ecuador</p>
     </footer>
-
-    <script>
-    function toggleMenu() {
-        document.querySelector(".menu").classList.toggle("activo");
-    }
-    </script>
 </body>
 </html>
-
