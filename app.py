@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify, flash, redirect
+from flask import Flask, request, render_template, flash, redirect
 import requests
 import os
 import threading
@@ -69,9 +69,9 @@ def contacto():
             flash("❌ Por favor completa todos los campos.", "error")
             return redirect("/contacto")
 
-        # --- Correo al administrador ---
+        # Correo al administrador
         datos_admin = {
-            "sender": {"name": "Stone Art Web", "email": "deldiego9.es@gmail.com"},  # tu correo verificado Brevo
+            "sender": {"name": "Stone Art Web", "email": "deldiego9.es@gmail.com"},
             "to": [{"email": "deldiego9.es@gmail.com", "name": "Stone Art Ecuador"}],
             "subject": f"Nuevo mensaje de {nombre}",
             "htmlContent": f"""
@@ -83,7 +83,7 @@ def contacto():
             """,
         }
 
-        # --- Correo de confirmación al usuario ---
+        # Correo de confirmación al usuario (sin logo)
         datos_usuario = {
             "sender": {"name": "Stone Art Ecuador", "email": "deldiego9.es@gmail.com"},
             "to": [{"email": email, "name": nombre}],
@@ -114,7 +114,6 @@ def contacto():
         flash("✅ Tu mensaje se ha enviado correctamente. Nos pondremos en contacto contigo.", "exito")
         return redirect("/contacto")
 
-    # Si es GET, solo mostramos el formulario
     return render_template("contacto.html")
 
 # ==============================
@@ -146,8 +145,8 @@ def verificar_key():
         return "No se encontró la clave BREVO_API_KEY"
 
 # ==============================
-# EJECUCIÓN LOCAL
+# EJECUCIÓN
 # ==============================
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
-
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
