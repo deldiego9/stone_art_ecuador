@@ -90,21 +90,16 @@ def contacto():
             "subject": "Gracias por contactarte con Stone Art Ecuador",
             "htmlContent": f"""
                 <div style="font-family: Arial, sans-serif; background-color:#f5f5f5; padding:30px;">
-                    <div style="max-width:600px; margin:auto; background:white; border-radius:10px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
-                        <div style="background-color:#222; text-align:center; padding:20px;">
-                            <img src="https://stoneartecuador.com/static/images/logo.png" alt="Stone Art Ecuador" style="width:120px; display:block; margin:auto;">
-                        </div>
-                        <div style="padding:30px; color:#333;">
-                            <h2 style="color:#222;">¡Gracias por tu mensaje, {nombre}!</h2>
-                            <p>Hemos recibido tu mensaje correctamente y nuestro equipo se pondrá en contacto contigo lo antes posible.</p>
-                            <p style="margin-top:20px;">Resumen de tu mensaje:</p>
-                            <blockquote style="border-left:4px solid #ccc; padding-left:10px; color:#555;">
-                                {mensaje}
-                            </blockquote>
-                            <p style="margin-top:30px;">Mientras tanto, puedes visitar nuestra <a href="https://stoneartecuador.com/galeria" style="color:#0066cc;">galería</a> para ver más de nuestras obras.</p>
-                            <p style="margin-top:40px;">Atentamente,<br><b>El equipo de Stone Art Ecuador</b></p>
-                        </div>
-                        <div style="background-color:#222; color:white; text-align:center; padding:15px; font-size:12px;">
+                    <div style="max-width:600px; margin:auto; background:white; border-radius:10px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.1); padding:30px;">
+                        <h2 style="color:#222;">¡Gracias por tu mensaje, {nombre}!</h2>
+                        <p>Hemos recibido tu mensaje correctamente y nuestro equipo se pondrá en contacto contigo lo antes posible.</p>
+                        <p style="margin-top:20px;">Resumen de tu mensaje:</p>
+                        <blockquote style="border-left:4px solid #ccc; padding-left:10px; color:#555;">
+                            {mensaje}
+                        </blockquote>
+                        <p style="margin-top:30px;">Mientras tanto, puedes visitar nuestra <a href="https://stoneartecuador.com/galeria" style="color:#0066cc;">galería</a> para ver más de nuestras obras.</p>
+                        <p style="margin-top:40px;">Atentamente,<br><b>El equipo de Stone Art Ecuador</b></p>
+                        <div style="text-align:center; margin-top:30px; color:#888; font-size:12px;">
                             © {os.environ.get("YEAR", "2025")} Stone Art Ecuador — Hecho con arte y dedicación en Ecuador 🇪🇨
                         </div>
                     </div>
@@ -155,3 +150,4 @@ def verificar_key():
 # ==============================
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
+
