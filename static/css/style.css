@@ -14,8 +14,8 @@ header {
     color: white;
     padding: 10px 20px;
     display: flex;
-    flex-direction: column; /* columna para centrar logo y menú */
-    align-items: center;    /* centra horizontalmente */
+    flex-direction: column;
+    align-items: center;
 }
 
 header .header-logo {
@@ -31,15 +31,17 @@ header .header-logo img {
 /* -------------------- Menú centrado -------------------- */
 header nav {
     display: flex;
-    justify-content: center; /* centra horizontalmente los enlaces */
-    gap: 20px;               /* espacio entre enlaces */
+    justify-content: center;
+    gap: 20px;
     margin-top: 10px;
+    flex-wrap: wrap;
 }
 
 header nav a {
     color: white;
     text-decoration: none;
     font-weight: bold;
+    transition: 0.3s;
 }
 
 header nav a:hover,
@@ -165,6 +167,7 @@ footer {
 .form-contacto button:hover {
     background-color: #7a5c45;
 }
+
 /* -------------------- Contacto -------------------- */
 .contacto {
     padding: 40px 20px;
@@ -191,35 +194,6 @@ footer {
     flex-direction: column;
 }
 
-.form-contacto input,
-.form-contacto textarea {
-    margin-bottom: 10px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-family: 'Segoe UI', sans-serif;
-}
-
-.form-contacto button {
-    background-color: #5e4633;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.form-contacto button:hover {
-    background-color: #7a5c45;
-}
-
-.mensaje-enviado {
-    color: green;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
 .info-contacto {
     text-align: left;
     max-width: 350px;
@@ -241,7 +215,7 @@ footer {
     overflow: hidden;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
-/* -------------------- Alerta de envío exitoso -------------------- */
+
 /* -------------------- Alerta de envío exitoso -------------------- */
 .alerta-exito {
     background-color: #d4edda;
@@ -253,22 +227,16 @@ footer {
     margin: 20px auto;
     font-weight: bold;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    opacity: 1; /* inicial */
-    transition: opacity 0.8s ease; /* transición suave para desvanecer */
+    opacity: 1;
+    transition: opacity 0.8s ease;
 }
 
 @keyframes aparecer {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* -------------------- Responsive -------------------- */
+/* -------------------- Responsive mejorado -------------------- */
 @media (max-width: 992px) {
     .galeria {
         grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -277,18 +245,66 @@ footer {
 }
 
 @media (max-width: 768px) {
+    header nav {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    header .header-logo img {
+        height: 40px;
+    }
+
     .galeria {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
         gap: 10px;
     }
 
     .obra img {
-        height: 120px;
+        height: 140px;
     }
 
     .obra p {
-        font-size: 12px;
+        font-size: 13px;
+    }
+
+    section {
+        padding: 25px 10px;
+    }
+
+    .contacto-contenedor {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .info-contacto {
+        text-align: center;
+    }
+
+    .alerta-exito {
+        width: 90%;
+    }
+
+    .mapa iframe {
+        width: 100%;
+        height: 250px;
     }
 }
 
+@media (max-width: 480px) {
+    body {
+        font-size: 14px;
+    }
 
+    header nav a {
+        font-size: 14px;
+    }
+
+    .obra img {
+        height: 120px;
+    }
+
+    .form-contacto {
+        width: 90%;
+    }
+}
