@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, redirect
+from flask import Flask, request, render_template, jsonify, flash, redirect
 import requests
 import os
 import threading
@@ -6,31 +6,34 @@ import threading
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "clave_temporal")
 
-# ---------------- Configuración de Brevo (Sendinblue) ----------------
+# ==============================
+# CONFIGURACIÓN DE BREVO
+# ==============================
 BREVO_API_KEY = os.environ.get("BREVO_API_KEY")
 BREVO_URL = "https://api.brevo.com/v3/smtp/email"
 
+# Función para enviar correos de manera asíncrona
 def enviar_correo_async(datos):
-    """Envía correo en un hilo separado usando la API de Brevo"""
     headers = {
         "accept": "application/json",
         "api-key": BREVO_API_KEY,
         "content-type": "application/json",
     }
     response = requests.post(BREVO_URL, headers=headers, json=datos)
-    print(f"📧 Envío de correo -> Status: {response.status_code}, Respuesta: {response.text}")
+    print("Respuesta de Brevo:", response.status_code, response.text)
 
-
-# ---------------- Rutas de la web ----------------
-@app.route('/')
+# ==============================
+# RUTAS DE LA WEB
+# ==============================
+@app.route("/")
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
 
-@app.route('/nosotros')
+@app.route("/nosotros")
 def nosotros():
-    return render_template('nosotros.html')
+    return render_template("nosotros.html")
 
-@app.route('/galeria')
+@app.route("/galeria")
 def galeria():
     carpeta_imagenes = os.path.join('static', 'images', 'obras')
     obras = []
@@ -41,73 +44,114 @@ def galeria():
         if archivo.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
             nombre_sin_extension = os.path.splitext(archivo)[0]
             descripcion = nombre_sin_extension.replace('_', ' ').title()
-
             key = None
             for k in prioridad:
                 if k in nombre_sin_extension.lower():
                     key = k
                     break
             orden = prioridad.get(key, 99)
-
             obras.append({"imagen": archivo, "descripcion": descripcion, "orden": orden})
 
     obras.sort(key=lambda x: (x["orden"], x["imagen"]))
     return render_template('galeria.html', obras=obras)
 
-
-@app.route('/contacto', methods=['GET', 'POST'])
+# ==============================
+# CONTACTO (GET y POST)
+# ==============================
+@app.route("/contacto", methods=["GET", "POST"])
 def contacto():
-    if request.method == 'POST':
-        nombre = request.form['nombre']
-        email = request.form['email']
-        mensaje = request.form['mensaje']
+    if request.method == "POST":
+        nombre = request.form.get("nombre")
+        email = request.form.get("email")
+        mensaje = request.form.get("mensaje")
 
-        try:
-            # --- Correo para Stone Art Ecuador ---
-            datos_empresa = {
-                "sender": {"name": "Stone Art Ecuador", "email": "deldiego9.es@gmail.com"},
-                "to": [
-                    {"email": "deldiego9.es@gmail.com", "name": "Stone Art Ecuador"},
-                    {"email": "deldiego9@gmail.com", "name": "Stone Art Ecuador"},
-                ],
-                "subject": f"Nuevo mensaje de {nombre}",
-                "htmlContent": f"""
-                    <h3>Nuevo mensaje desde el formulario de contacto</h3>
-                    <p><b>Nombre:</b> {nombre}</p>
-                    <p><b>Email:</b> {email}</p>
-                    <p><b>Mensaje:</b><br>{mensaje}</p>
-                """,
-            }
+        if not all([nombre, email, mensaje]):
+            flash("❌ Por favor completa todos los campos.", "error")
+            return redirect("/contacto")
 
-            # --- Correo de confirmación para el usuario ---
-            datos_usuario = {
-                "sender": {"name": "Stone Art Ecuador", "email": "deldiego9.es@gmail.com"},
-                "to": [{"email": email, "name": nombre}],
-                "subject": "Gracias por contactarte con Stone Art Ecuador",
-                "htmlContent": f"""
-                    <p>Hola <b>{nombre}</b>,</p>
-                    <p>Gracias por escribirnos. Hemos recibido tu mensaje y te responderemos lo antes posible.</p>
-                    <br>
-                    <p>Saludos,<br><b>Stone Art Ecuador</b></p>
-                """,
-            }
+        # --- Correo al administrador ---
+        datos_admin = {
+            "sender": {"name": "Stone Art Web", "email": "deldiego9.es@gmail.com"},  # tu correo verificado Brevo
+            "to": [{"email": "deldiego9.es@gmail.com", "name": "Stone Art Ecuador"}],
+            "subject": f"Nuevo mensaje de {nombre}",
+            "htmlContent": f"""
+                <h2>Nuevo mensaje desde la web</h2>
+                <p><b>Nombre:</b> {nombre}</p>
+                <p><b>Email:</b> {email}</p>
+                <p><b>Mensaje:</b></p>
+                <p>{mensaje}</p>
+            """,
+        }
 
-            threading.Thread(target=enviar_correo_async, args=(datos_empresa,)).start()
-            threading.Thread(target=enviar_correo_async, args=(datos_usuario,)).start()
+        # --- Correo de confirmación al usuario ---
+        datos_usuario = {
+            "sender": {"name": "Stone Art Ecuador", "email": "deldiego9.es@gmail.com"},
+            "to": [{"email": email, "name": nombre}],
+            "subject": "Gracias por contactarte con Stone Art Ecuador",
+            "htmlContent": f"""
+                <div style="font-family: Arial, sans-serif; background-color:#f5f5f5; padding:30px;">
+                    <div style="max-width:600px; margin:auto; background:white; border-radius:10px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                        <div style="background-color:#222; text-align:center; padding:20px;">
+                            <img src="https://stoneartecuador.com/static/images/logo.png" alt="Stone Art Ecuador" style="width:120px; display:block; margin:auto;">
+                        </div>
+                        <div style="padding:30px; color:#333;">
+                            <h2 style="color:#222;">¡Gracias por tu mensaje, {nombre}!</h2>
+                            <p>Hemos recibido tu mensaje correctamente y nuestro equipo se pondrá en contacto contigo lo antes posible.</p>
+                            <p style="margin-top:20px;">Resumen de tu mensaje:</p>
+                            <blockquote style="border-left:4px solid #ccc; padding-left:10px; color:#555;">
+                                {mensaje}
+                            </blockquote>
+                            <p style="margin-top:30px;">Mientras tanto, puedes visitar nuestra <a href="https://stoneartecuador.com/galeria" style="color:#0066cc;">galería</a> para ver más de nuestras obras.</p>
+                            <p style="margin-top:40px;">Atentamente,<br><b>El equipo de Stone Art Ecuador</b></p>
+                        </div>
+                        <div style="background-color:#222; color:white; text-align:center; padding:15px; font-size:12px;">
+                            © {os.environ.get("YEAR", "2025")} Stone Art Ecuador — Hecho con arte y dedicación en Ecuador 🇪🇨
+                        </div>
+                    </div>
+                </div>
+            """,
+        }
 
-            flash("✅ Tu mensaje se ha enviado correctamente. Revisa tu correo para confirmar el envío.", "exito")
-        except Exception as e:
-            flash(f"❌ Error al enviar el mensaje: {e}", "error")
+        # Envío de correos en segundo plano
+        threading.Thread(target=enviar_correo_async, args=(datos_admin,)).start()
+        threading.Thread(target=enviar_correo_async, args=(datos_usuario,)).start()
 
-        return redirect('/contacto')
+        flash("✅ Tu mensaje se ha enviado correctamente. Nos pondremos en contacto contigo.", "exito")
+        return redirect("/contacto")
 
-    return render_template('contacto.html')
+    # Si es GET, solo mostramos el formulario
+    return render_template("contacto.html")
 
+# ==============================
+# RUTA DE PRUEBA DE CORREO
+# ==============================
+@app.route("/prueba-correo")
+def prueba_correo():
+    if not BREVO_API_KEY:
+        return "No se encontró la clave BREVO_API_KEY"
 
-@app.route("/ping")
-def ping():
-    return "App funcionando correctamente!"
+    datos_prueba = {
+        "sender": {"name": "Stone Art Ecuador", "email": "deldiego9.es@gmail.com"},
+        "to": [{"email": "deldiego9.es@gmail.com"}],
+        "subject": "📧 Prueba de correo desde Stone Art",
+        "htmlContent": "<h2>El sistema de correos funciona correctamente 🎉</h2>",
+    }
 
+    threading.Thread(target=enviar_correo_async, args=(datos_prueba,)).start()
+    return "Correo de prueba enviado correctamente."
 
+# ==============================
+# DEBUG DE CLAVE API (solo pruebas)
+# ==============================
+@app.route("/verificar-key")
+def verificar_key():
+    if BREVO_API_KEY:
+        return f"Clave Brevo encontrada: {BREVO_API_KEY[:6]}... (longitud {len(BREVO_API_KEY)})"
+    else:
+        return "No se encontró la clave BREVO_API_KEY"
+
+# ==============================
+# EJECUCIÓN LOCAL
+# ==============================
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
