@@ -291,6 +291,10 @@ footer {
     }
 }
 /* -------------------- Responsive móvil definitivo con hamburguesa -------------------- */
+/* Ocultar hamburguesa en pantallas grandes */
+.menu-toggle {
+    display: none;
+}
 @media (max-width: 768px) {
 
     /* Header: logo más pequeño */
