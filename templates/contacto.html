@@ -2,8 +2,9 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contacto - Stone Art Ecuador</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=2">
 </head>
 <body>
     <header>
@@ -93,6 +94,7 @@
             menu.classList.toggle('activo');
         });
     </script>
+    <script src="{{ url_for('static', filename='js/menu.js') }}?v=2"></script>
 </body>
 </html>
 
