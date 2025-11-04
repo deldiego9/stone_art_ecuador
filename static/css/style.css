@@ -1,4 +1,4 @@
-/* -------------------- Body general -------------------- */
+* -------------------- Body general -------------------- */
 body {
     font-family: 'Segoe UI', sans-serif;
     background-color: #f4f1ec;
@@ -290,5 +290,105 @@ footer {
         font-size: 12px;
     }
 }
+/* -------------------- Responsive móvil definitivo con hamburguesa -------------------- */
+@media (max-width: 768px) {
+
+    /* Header: logo más pequeño */
+    header .header-logo img {
+        height: 40px;
+    }
+
+    /* Botón hamburguesa */
+    .menu-toggle {
+        display: block;
+        font-size: 28px;
+        cursor: pointer;
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        color: white;
+        z-index: 101;
+        user-select: none;
+    }
+
+    /* Menú oculto por defecto */
+    #menu-nav {
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 5px;
+        background-color: #5e4633;
+        padding: 10px;
+        border-radius: 8px;
+        position: absolute;
+        right: 20px;
+        top: 60px;
+        z-index: 100;
+        width: 150px;
+
+        /* Transición suave */
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+    }
+
+    /* Mostrar menú al abrir */
+    #menu-nav.activo {
+        display: flex;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    #menu-nav a {
+        color: white;
+        font-weight: bold;
+        text-decoration: none;
+        padding: 8px 0;
+        text-align: center;
+    }
+
+    #menu-nav a:hover {
+        background-color: #7a5c45;
+        border-radius: 5px;
+    }
+
+    /* Banner responsivo */
+    .banner img {
+        max-height: 250px;
+        object-fit: cover;
+    }
+
+    /* Galería: menos columnas, imágenes más pequeñas */
+    .galeria {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 10px;
+    }
+
+    .obra img {
+        height: 100px;
+    }
+
+    .obra p {
+        font-size: 12px;
+    }
+
+    /* Secciones: padding reducido */
+    section {
+        padding: 20px 10px;
+    }
+
+    /* Contacto: formulario e info apilados vertical */
+    .contacto-contenedor {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .info-contacto {
+        max-width: 100%;
+        text-align: center;
+    }
+}
+
 
 

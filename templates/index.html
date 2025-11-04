@@ -8,13 +8,22 @@
 <body>
     <!-- Header con menú centrado -->
     <header>
-        <nav>
-            <a href="/" class="activo">Inicio</a>
-            <a href="/galeria">Galería</a>
-            <a href="/nosotros">Nosotros</a>
-            <a href="/contacto">Contacto</a>
-        </nav>
-    </header>
+    <div class="header-logo">
+        <img src="{{ url_for('static', filename='logo/logo.png') }}" alt="Stone Art Ecuador">
+        <h1>Stone Art Ecuador</h1>
+    </div>
+
+    <!-- Botón hamburguesa -->
+    <div class="menu-toggle" id="menu-toggle">&#9776;</div>
+
+    <nav id="menu-nav">
+        <a href="/" class="activo">Inicio</a>
+        <a href="/galeria">Galería</a>
+        <a href="/nosotros">Nosotros</a>
+        <a href="/contacto">Contacto</a>
+    </nav>
+</header>
+
 
     <!-- 🔹 Banner principal -->
     <div class="banner">
@@ -29,11 +38,13 @@
     <footer>
         <p>© 2025 Stone Art Ecuador</p>
     </footer>
+    <script>
+        const toggle = document.getElementById('menu-toggle');
+        const menu = document.getElementById('menu-nav');
+
+        toggle.addEventListener('click', () => {
+            menu.classList.toggle('activo');
+        });
+    </script>
 </body>
 </html>
-
-
-
-
-
-
