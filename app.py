@@ -23,6 +23,52 @@ def enviar_correo_async(datos):
     print("Respuesta de Brevo:", response.status_code, response.text)
 
 # ==============================
+# CONFIGURACIÓN DE CATEGORÍAS
+# ==============================
+CATEGORIAS = {
+    "esculturas": {
+        "nombre": "Esculturas",
+        "descripcion": "Obras escultóricas en diversos materiales",
+        "icono": "🗿"
+    },
+    "pintura": {
+        "nombre": "Pintura",
+        "descripcion": "Arte pictórico y obras sobre lienzo",
+        "icono": "🎨"
+    },
+    "tallado_piedra": {
+        "nombre": "Tallado en Piedra",
+        "descripcion": "Trabajos de tallado en piedra natural",
+        "icono": "🪨"
+    },
+    "madera": {
+        "nombre": "Madera",
+        "descripcion": "Creaciones artísticas en madera",
+        "icono": "🪵"
+    },
+    "murales": {
+        "nombre": "Murales",
+        "descripcion": "Arte mural y decoración de espacios",
+        "icono": "🖼️"
+    },
+    "lapidas": {
+        "nombre": "Lápidas",
+        "descripcion": "Lápidas conmemorativas personalizadas",
+        "icono": "⚱️"
+    },
+    "restauraciones": {
+        "nombre": "Restauraciones",
+        "descripcion": "Restauración de obras y esculturas",
+        "icono": "🔨"
+    },
+    "fuentes_cascadas": {  # ← NUEVA CATEGORÍA
+        "nombre": "Fuentes y Cascadas",
+        "descripcion": "Diseño y construcción de fuentes ornamentales y cascadas",
+        "icono": "⛲"
+    }
+}
+
+# ==============================
 # RUTAS DE LA WEB
 # ==============================
 @app.route("/")
@@ -35,25 +81,45 @@ def nosotros():
 
 @app.route("/galeria")
 def galeria():
-    carpeta_imagenes = os.path.join('static', 'images', 'obras')
+    return render_template("galeria_categorias.html", categorias=CATEGORIAS)
+
+@app.route("/galeria/<categoria>")
+def galeria_categoria(categoria):
+    if categoria not in CATEGORIAS:
+        flash("❌ Categoría no encontrada", "error")
+        return redirect("/galeria")
+    
+    carpeta_imagenes = os.path.join('static', 'images', 'obras', categoria)
     obras = []
-
-    prioridad = {"piedra": 1, "madera": 2, "pintura": 3}
-
-    for archivo in os.listdir(carpeta_imagenes):
-        if archivo.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
-            nombre_sin_extension = os.path.splitext(archivo)[0]
-            descripcion = nombre_sin_extension.replace('_', ' ').title()
-            key = None
-            for k in prioridad:
-                if k in nombre_sin_extension.lower():
-                    key = k
-                    break
-            orden = prioridad.get(key, 99)
-            obras.append({"imagen": archivo, "descripcion": descripcion, "orden": orden})
-
-    obras.sort(key=lambda x: (x["orden"], x["imagen"]))
-    return render_template('galeria.html', obras=obras)
+    
+    # Verificar que la carpeta existe
+    if not os.path.exists(carpeta_imagenes):
+        flash(f"⚠️ Aún no hay obras en {CATEGORIAS[categoria]['nombre']}", "error")
+        return render_template('galeria_detalle.html', 
+                             obras=[], 
+                             categoria=CATEGORIAS[categoria],
+                             categoria_key=categoria)
+    
+    # Cargar imágenes de la categoría
+    try:
+        for archivo in os.listdir(carpeta_imagenes):
+            if archivo.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp')):
+                nombre_sin_extension = os.path.splitext(archivo)[0]
+                descripcion = nombre_sin_extension.replace('_', ' ').title()
+                obras.append({
+                    "imagen": archivo,
+                    "descripcion": descripcion,
+                    "categoria": categoria
+                })
+        
+        obras.sort(key=lambda x: x["imagen"])
+    except Exception as e:
+        print(f"Error al cargar imágenes: {e}")
+    
+    return render_template('galeria_detalle.html', 
+                         obras=obras, 
+                         categoria=CATEGORIAS[categoria],
+                         categoria_key=categoria)
 
 # ==============================
 # CONTACTO (GET y POST)
@@ -83,7 +149,7 @@ def contacto():
             """,
         }
 
-        # Correo de confirmación al usuario (sin logo)
+        # Correo de confirmación al usuario
         datos_usuario = {
             "sender": {"name": "Stone Art Ecuador", "email": "deldiego9.es@gmail.com"},
             "to": [{"email": email, "name": nombre}],
@@ -117,7 +183,7 @@ def contacto():
     return render_template("contacto.html")
 
 # ==============================
-# RUTA DE PRUEBA DE CORREO
+# RUTAS DE DEBUG (solo desarrollo)
 # ==============================
 @app.route("/prueba-correo")
 def prueba_correo():
@@ -134,9 +200,6 @@ def prueba_correo():
     threading.Thread(target=enviar_correo_async, args=(datos_prueba,)).start()
     return "Correo de prueba enviado correctamente."
 
-# ==============================
-# DEBUG DE CLAVE API (solo pruebas)
-# ==============================
 @app.route("/verificar-key")
 def verificar_key():
     if BREVO_API_KEY:

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contacto - Stone Art Ecuador</title>
+    <title>{{ categoria.nombre }} - Stone Art Ecuador</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -20,60 +20,49 @@
             </button>
             <nav id="navMenu">
                 <a href="/">Inicio</a>
-                <a href="/galeria">Galería</a>
+                <a href="/galeria" class="activo">Galería</a>
                 <a href="/nosotros">Nosotros</a>
-                <a href="/contacto" class="activo">Contacto</a>
+                <a href="/contacto">Contacto</a>
             </nav>
         </div>
     </header>
 
-    <section class="contacto">
-        <h2>Contáctanos</h2>
-        <p>¿Tienes alguna pregunta o deseas solicitar un trabajo personalizado? Envíanos un mensaje o visítanos directamente.</p>
-
-        <!-- Mensajes flash -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            <div id="flash-messages">
-              {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">
-                  {{ message }}
-                </div>
-              {% endfor %}
-            </div>
-          {% endif %}
-        {% endwith %}
-
-        <div class="contacto-contenedor">
-            <!-- Formulario -->
-            <form class="form-contacto" method="POST" action="/contacto">
-                <input type="text" name="nombre" placeholder="Tu nombre" required autocomplete="name">
-                <input type="email" name="email" placeholder="Tu correo electrónico" required autocomplete="email">
-                <textarea name="mensaje" rows="5" placeholder="Escribe tu mensaje aquí..." required></textarea>
-                <button type="submit">Enviar mensaje</button>
-            </form>
-
-            <!-- Información de contacto -->
-            <div class="info-contacto">
-                <h3>Información de contacto</h3>
-                <p><strong>📍 Dirección:</strong> Av. Gral Rumiñahui OE1-385, Ciudadela Hospitalaria, Conocoto, Quito.<br>Entre puente 7 y 8</p>
-                <p><strong>📞 Teléfono:</strong> <a href="tel:+593998129669">+593 99 8129669</a></p>
-                <p><strong>✉️ Correo:</strong> <a href="mailto:faustoparedesan@gmail.com">faustoparedesan@gmail.com</a></p>
-            </div>
+    <section>
+        <div class="breadcrumb">
+            <a href="/galeria">← Volver a Categorías</a>
         </div>
 
-        <!-- Mapa -->
-        <div class="mapa">
-            <iframe 
-                src="https://www.google.com/maps?q=Av.%20Gral%20Rumi%C3%B1ahui%20OE1-385%20Conocoto%20Quito%20Ecuador&output=embed"
-                width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy">
-            </iframe>
+        <h2>{{ categoria.icono }} {{ categoria.nombre }}</h2>
+        <p>{{ categoria.descripcion }}</p>
+
+        {% if obras %}
+        <div class="galeria">
+            {% for obra in obras %}
+            <div class="obra">
+                <img src="{{ url_for('static', filename='images/obras/' ~ categoria_key ~ '/' ~ obra.imagen) }}" 
+                     alt="{{ obra.descripcion }}" 
+                     onclick="openLightbox(this.src)"
+                     loading="lazy">
+                <p>{{ obra.descripcion }}</p>
+            </div>
+            {% endfor %}
         </div>
+        {% else %}
+        <div class="no-obras">
+            <p>📦 Aún no hay obras en esta categoría</p>
+        </div>
+        {% endif %}
     </section>
 
     <footer>
         <p>© 2025 Stone Art Ecuador</p>
     </footer>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img id="lightbox-img" src="" alt="Imagen ampliada">
+    </div>
 
     <script>
         // Menú móvil
@@ -103,15 +92,22 @@
             }
         });
 
-        // Auto-cerrar mensajes flash después de 4 segundos
-        document.addEventListener("DOMContentLoaded", function() {
-            const flash = document.getElementById('flash-messages');
-            if (flash) {
-                setTimeout(() => {
-                    flash.style.transition = "opacity 0.8s ease";
-                    flash.style.opacity = "0";
-                    setTimeout(() => flash.remove(), 800);
-                }, 4000);
+        // Lightbox
+        function openLightbox(src) {
+            document.getElementById('lightbox').style.display = 'flex';
+            document.getElementById('lightbox-img').src = src;
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Cerrar con tecla ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
             }
         });
     </script>
@@ -249,5 +245,3 @@
 </script>
 </body>
 </html>
-
-

@@ -4,49 +4,181 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stone Art Ecuador</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=2">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <!-- Header con menú centrado -->
+    <!-- Header con menú hamburguesa -->
     <header>
-    <div class="header-logo">
-        <img src="{{ url_for('static', filename='logo/logo.png') }}" alt="Stone Art Ecuador">
-        <h1>Stone Art Ecuador</h1>
-    </div>
+        <div class="header-content">
+            <div class="header-logo">
+                <img src="{{ url_for('static', filename='logo/logo.png') }}" alt="Stone Art Ecuador">
+                <h1>Stone Art Ecuador</h1>
+            </div>
+            <button class="menu-toggle" id="menuToggle" aria-label="Menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav id="navMenu">
+                <a href="/" class="activo">Inicio</a>
+                <a href="/galeria">Galería</a>
+                <a href="/nosotros">Nosotros</a>
+                <a href="/contacto">Contacto</a>
+            </nav>
+        </div>
+    </header>
 
-    <!-- Botón hamburguesa -->
-    <div class="menu-toggle" id="menu-toggle">&#9776;</div>
-
-    <nav id="menu-nav">
-        <a href="/" class="activo">Inicio</a>
-        <a href="/galeria">Galería</a>
-        <a href="/nosotros">Nosotros</a>
-        <a href="/contacto">Contacto</a>
-    </nav>
-</header>
-
-
-    <!-- 🔹 Banner principal -->
-    <div class="banner">
+    <!-- Banner principal con overlay de texto -->
+    <div class="banner hero-banner">
         <img src="{{ url_for('static', filename='images/banner/banner.jpg') }}" alt="Stone Art Ecuador - Banner">
+        <div class="hero-overlay">
+            <div class="hero-content">
+                <h1 class="hero-title">Stone Art Ecuador</h1>
+                <p class="hero-subtitle">Donde la naturaleza se transforma en arte</p>
+                <div class="hero-buttons">
+                    <a href="/galeria" class="btn-primary">Ver Galería</a>
+                    <a href="/contacto" class="btn-secondary">Contáctanos</a>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <section>
+    <!-- Sección principal mejorada -->
+    <section class="home-intro">
+        <div class="intro-icon">🎨</div>
         <h2>Arte en piedra, pintura y madera</h2>
-        <p>Bienvenido a <b>Stone Art Ecuador</b>, un espacio donde la naturaleza se transforma en arte.</p>
+        <p class="intro-text">Bienvenido a <strong>Stone Art Ecuador</strong>, un espacio donde la naturaleza se transforma en arte. Cada pieza que creamos es única y cuenta una historia.</p>
+        <a href="/galeria" class="btn-explore">Explorar nuestras obras →</a>
+    </section>
+
+    <!-- Nueva sección: Destacados -->
+    <section class="home-highlights">
+        <h2 class="section-title">Lo que nos hace únicos</h2>
+        <div class="highlights-grid">
+            <div class="highlight-card">
+                <div class="highlight-icon">✨</div>
+                <h3>Artesanía</h3>
+                <p>100% hecho a mano por artesanos ecuatorianos</p>
+            </div>
+            <div class="highlight-card">
+                <div class="highlight-icon">🌿</div>
+                <h3>Materiales</h3>
+                <p>Piedra, madera y materiales nobles de calidad</p>
+            </div>
+            <div class="highlight-card">
+                <div class="highlight-icon">🎯</div>
+                <h3>Personalizado</h3>
+                <p>Diseños únicos adaptados a tus necesidades</p>
+            </div>
+            <div class="highlight-card">
+                <div class="highlight-icon">⭐</div>
+                <h3>Experiencia</h3>
+                <p>Años de dedicación al arte en piedra y madera</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Nueva sección: Categorías destacadas -->
+    <section class="home-categories">
+        <h2 class="section-title">Explora nuestras categorías</h2>
+        <p class="section-subtitle">Descubre la variedad de trabajos artísticos que realizamos</p>
+        <div class="categories-preview">
+            <a href="/galeria/esculturas" class="category-preview">
+                <div class="category-preview-icon">🗿</div>
+                <h3>Esculturas</h3>
+            </a>
+            <a href="/galeria/pintura" class="category-preview">
+                <div class="category-preview-icon">🎨</div>
+                <h3>Pintura</h3>
+            </a>
+            <a href="/galeria/tallado_piedra" class="category-preview">
+                <div class="category-preview-icon">🪨</div>
+                <h3>Tallado en Piedra</h3>
+            </a>
+            <a href="/galeria/madera" class="category-preview">
+                <div class="category-preview-icon">🪵</div>
+                <h3>Madera</h3>
+            </a>
+        </div>
+        <a href="/galeria" class="btn-view-all">Ver todas las categorías</a>
+    </section>
+
+    <!-- Nueva sección: Call to Action -->
+    <section class="home-cta">
+        <div class="cta-content">
+            <h2>¿Tienes un proyecto en mente?</h2>
+            <p>Trabajamos contigo para crear la obra perfecta que imaginas</p>
+            <a href="/contacto" class="btn-cta">Solicitar presupuesto</a>
+        </div>
     </section>
 
     <footer>
         <p>© 2025 Stone Art Ecuador</p>
     </footer>
-    <script>
-        const toggle = document.getElementById('menu-toggle');
-        const menu = document.getElementById('menu-nav');
 
-        toggle.addEventListener('click', () => {
-            menu.classList.toggle('activo');
+    <!-- Botón volver arriba -->
+    <button class="scroll-to-top" id="scrollTopBtn" aria-label="Volver arriba">↑</button>
+
+    <!-- JavaScript -->
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const navMenu = document.getElementById('navMenu');
+        
+        menuToggle.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+        });
+
+        const navLinks = navMenu.querySelectorAll('a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                navMenu.classList.remove('active');
+                menuToggle.classList.remove('active');
+            });
+        });
+
+        document.addEventListener('click', function(event) {
+            const isClickInsideNav = navMenu.contains(event.target);
+            const isClickOnToggle = menuToggle.contains(event.target);
+            
+            if (!isClickInsideNav && !isClickOnToggle && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+                menuToggle.classList.remove('active');
+            }
+        });
+
+        // Botón volver arriba
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+        
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        });
+        
+        scrollTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Animación de entrada para elementos
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in-visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.highlight-card, .category-preview, .home-cta').forEach(el => {
+            el.classList.add('fade-in-element');
+            observer.observe(el);
         });
     </script>
-    <script src="{{ url_for('static', filename='js/menu.js') }}?v=2"></script>
 </body>
 </html>
+

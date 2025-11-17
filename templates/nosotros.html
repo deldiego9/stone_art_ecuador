@@ -4,79 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nosotros - Stone Art Ecuador</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=2">
-    <style>
-        /* --- Estilos adicionales exclusivos para la página Nosotros --- */
-        .nosotros-contenido {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 40px;
-            padding: 60px 40px;
-            background: linear-gradient(to right, #f8f6f3, #e9e4dc);
-            flex-wrap: wrap;
-        }
-
-        .nosotros-texto {
-            flex: 1 1 500px;
-            max-width: 700px;
-            text-align: justify;
-            color: #3a2c20;
-        }
-
-        .nosotros-texto h2 {
-            text-align: left;
-            color: #5e4633;
-            margin-bottom: 20px;
-            font-size: 2em;
-            border-left: 5px solid #5e4633;
-            padding-left: 10px;
-        }
-
-        .nosotros-imagen {
-            flex: 1 1 400px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .nosotros-imagen img {
-            width: 100%;
-            max-width: 400px;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-        }
-
-        @media (max-width: 900px) {
-            .nosotros-contenido {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .nosotros-texto h2 {
-                text-align: center;
-                border: none;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <header>
-    <div class="header-logo">
-        <img src="{{ url_for('static', filename='logo/logo.png') }}" alt="Stone Art Ecuador">
-        <h1>Stone Art Ecuador</h1>
-    </div>
-
-    <!-- Botón hamburguesa -->
-    <div class="menu-toggle" id="menu-toggle">&#9776;</div>
-
-    <nav id="menu-nav">
-        <a href="/" class="activo">Inicio</a>
-        <a href="/galeria">Galería</a>
-        <a href="/nosotros">Nosotros</a>
-        <a href="/contacto">Contacto</a>
-    </nav>
-</header>
-
+        <div class="header-content">
+            <div class="header-logo">
+                <img src="{{ url_for('static', filename='logo/logo.png') }}" alt="Stone Art Ecuador">
+                <h1>Stone Art Ecuador</h1>
+            </div>
+            <button class="menu-toggle" id="menuToggle" aria-label="Menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav id="navMenu">
+                <a href="/">Inicio</a>
+                <a href="/galeria">Galería</a>
+                <a href="/nosotros" class="activo">Nosotros</a>
+                <a href="/contacto">Contacto</a>
+            </nav>
+        </div>
+    </header>
 
     <section class="nosotros-contenido">
         <div class="nosotros-texto">
@@ -109,14 +58,167 @@
     <footer>
         <p>© 2025 Stone Art Ecuador</p>
     </footer>
-    <script>
-        const toggle = document.getElementById('menu-toggle');
-        const menu = document.getElementById('menu-nav');
 
-        toggle.addEventListener('click', () => {
-            menu.classList.toggle('activo');
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const navMenu = document.getElementById('navMenu');
+        
+        menuToggle.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+        });
+
+        const navLinks = navMenu.querySelectorAll('a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                navMenu.classList.remove('active');
+                menuToggle.classList.remove('active');
+            });
+        });
+
+        document.addEventListener('click', function(event) {
+            const isClickInsideNav = navMenu.contains(event.target);
+            const isClickOnToggle = menuToggle.contains(event.target);
+            
+            if (!isClickInsideNav && !isClickOnToggle && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+                menuToggle.classList.remove('active');
+            }
         });
     </script>
-    <script src="{{ url_for('static', filename='js/menu.js') }}?v=2"></script>
+    <!-- Botón volver arriba y efectos adicionales -->
+<button class="scroll-to-top" id="scrollTopBtn" aria-label="Volver arriba">↑</button>
+
+<script>
+    // Botón volver arriba
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+    
+    window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+            scrollTopBtn.classList.add('visible');
+        } else {
+            scrollTopBtn.classList.remove('visible');
+        }
+    });
+    
+    scrollTopBtn.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+
+    // Efecto parallax suave en banner (si existe)
+    const banner = document.querySelector('.banner img');
+    if (banner) {
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            if (scrolled < 500) {
+                banner.style.transform = `translateY(${scrolled * 0.3}px)`;
+            }
+        });
+    }
+
+    // Lazy loading mejorado para imágenes
+    if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.style.animation = 'fadeIn 0.5s ease-in';
+                    observer.unobserve(img);
+                }
+            });
+        });
+
+        document.querySelectorAll('.obra img, .categoria-card').forEach(img => {
+            imageObserver.observe(img);
+        });
+    }
+</script>
+<script>
+    // ===== EFECTOS MÓVIL/TABLET =====
+    
+    if (window.innerWidth <= 768) {
+        
+        // 1. Header que se encoge al hacer scroll
+        let lastScroll = 0;
+        const header = document.querySelector('header');
+        
+        window.addEventListener('scroll', function() {
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+            
+            lastScroll = currentScroll;
+        });
+        
+        // 2. Mostrar indicador de swipe al cargar (solo primera vez)
+        if (!sessionStorage.getItem('swipe-seen')) {
+            setTimeout(() => {
+                const indicator = document.createElement('div');
+                indicator.className = 'swipe-indicator';
+                indicator.textContent = '👆 Toca las categorías';
+                document.body.appendChild(indicator);
+                
+                setTimeout(() => indicator.remove(), 3000);
+                sessionStorage.setItem('swipe-seen', 'true');
+            }, 1000);
+        }
+        
+        // 3. Animación de elementos al entrar en viewport
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in-view');
+                }
+            });
+        }, { threshold: 0.2 });
+        
+        document.querySelectorAll('.categoria-card, .obra').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // 4. Efecto de partículas al tocar (opcional)
+        document.addEventListener('touchstart', function(e) {
+            const touch = e.touches[0];
+            const particle = document.createElement('div');
+            particle.className = 'touch-particle';
+            particle.style.left = touch.clientX + 'px';
+            particle.style.top = touch.clientY + 'px';
+            document.body.appendChild(particle);
+            
+            setTimeout(() => particle.remove(), 1000);
+        });
+        
+        // 5. Parallax suave en banner (tablet)
+        if (window.innerWidth > 480 && window.innerWidth <= 768) {
+            const banner = document.querySelector('.banner img');
+            if (banner) {
+                window.addEventListener('scroll', function() {
+                    const scrolled = window.pageYOffset;
+                    if (scrolled < 400) {
+                        banner.style.transform = `translate(-50%, -50%) translateY(${scrolled * 0.2}px)`;
+                    }
+                });
+            }
+        }
+        
+        // 6. Haptic feedback (vibración) en toques (si está disponible)
+        if ('vibrate' in navigator) {
+            document.querySelectorAll('.categoria-card, .obra, .form-contacto button').forEach(el => {
+                el.addEventListener('touchstart', function() {
+                    navigator.vibrate(10); // Vibración sutil de 10ms
+                });
+            });
+        }
+    }
+    
+</script>
 </body>
 </html>
+
